@@ -91,8 +91,10 @@
 
       var eboekhoudenBaseUrl = 'https://soap.e-boekhouden.nl/soap.asmx?WSDL';
       var eboekhoudenUsername = 'nickfrijters';
-      var eboekhoudenSecurityCode1 = prompt('Please enter e-boekhouden "Beveiligingscode 1"', '');
-      var eboekhoudenSecurityCode2 = prompt('Please enter e-boekhouden "Beveiligingscode 2"', '');
+      var eboekhoudenSecurityCode1 = 'abc';
+      var eboekhoudenSecurityCode2 = 'def';
+      // var eboekhoudenSecurityCode1 = prompt('Please enter e-boekhouden "Beveiligingscode 1"', '');
+      // var eboekhoudenSecurityCode2 = prompt('Please enter e-boekhouden "Beveiligingscode 2"', '');
 
       var soapMessage = '<?xml version="1.0" encoding="UTF-8"?>' +
         '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.e-boekhouden.nl/soap">' +
@@ -114,7 +116,8 @@
         crossDomain: true,
         dataType: 'xml',
         headers: {
-          SOAPAction: 'http://www.e-boekhouden.nl/soap/OpenSession'
+          'SOAPAction': 'http://www.e-boekhouden.nl/soap/OpenSession',
+          'Content-Type': 'text/xml'
         },
         data: soapMessage,
         success: function (response) {
