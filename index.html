@@ -25,38 +25,6 @@
     crossorigin="anonymous"></script>
     <script src="https://api.trello.com/1/client.js?key=4c199ea635860bca26b23270f0d7bf1e"></script>
     <script>
-      var trelloAuthenticationSuccess = function() {
-        console.log('Trello Authentication: Successful with token [' + Trello.token() + ']');
-      };
-
-      var trelloAuthenticationFailure = function() {
-        console.log('Trello Authentication: Failed');
-      };
-
-      var trelloGetCustomersSuccess = function(result) {
-        console.log('Trello Get Customers: Success');
-        console.log(result);
-        console.log(result.checkItems);
-      };
-
-      var trelloGetCustomersFailure = function() {
-        console.log('Trello Get Customers: Failed');
-      };
-
-      window.Trello.authorize({
-        type: 'popup',
-        name: 'Nice Administratiekantoor - Werkinstructies',
-        scope: {
-          read: 'true',
-          write: 'true' },
-        expiration: 'never',
-        success: trelloAuthenticationSuccess,
-        error: trelloAuthenticationFailure
-      });
-
-      window.Trello.checklists.get('5f04446286227357e05bb844', trelloGetCustomersSuccess, trelloGetCustomersFailure);
-
-      var months = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
       var customers = [
         {
           customerNumber: 'Z000002',
@@ -113,6 +81,64 @@
           customerOptionStarter: 0
         }
       ];
+
+      /*
+        Trello Start
+        https://developer.atlassian.com/cloud/trello/guides/client-js/client-js-reference/
+       */
+
+      var trelloAuthenticationSuccess = function() {
+        console.log('Trello Authentication: Successful with token [' + Trello.token() + ']');
+      };
+
+      var trelloAuthenticationFailure = function() {
+        console.log('Trello Authentication: Failed');
+      };
+
+      var trelloGetCustomersSuccess = function(result) {
+        console.log('Trello Get Customers: Success');
+        console.log(result);
+        console.log(result.checkItems);
+        for (var i = 0; i < result.checkItems.length; i++) {
+          var split = result.checkItems[i].split(";")
+          var customer = {
+            customerNumber: split[0],
+            customerName: split[1],
+            customerContact: split[2],
+            customerOptionWeSaveTaxes: split[3],
+            customerOptionPaymentRequest: split[4],
+            customerOptionWorksOver1225: split[5],
+            customerOptionStarter: split[6]
+          }
+          console.log('Trello Data Customer[' + i + ']:');
+          console.log(customer);
+          customers.push(customer);
+        }
+        console.log(customers);
+      };
+
+      var trelloGetCustomersFailure = function() {
+        console.log('Trello Get Customers: Failed');
+      };
+
+      window.Trello.authorize({
+        type: 'popup',
+        name: 'Nice Administratiekantoor - Werkinstructies',
+        scope: {
+          read: 'true',
+          write: 'true' },
+        expiration: 'never',
+        success: trelloAuthenticationSuccess,
+        error: trelloAuthenticationFailure
+      });
+
+      window.Trello.checklists.get('5f04446286227357e05bb844', trelloGetCustomersSuccess, trelloGetCustomersFailure);
+
+      /*
+        Trello End
+       */
+
+      var months = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
       var activeWorkload = -1;
       var workloads = [
         {
