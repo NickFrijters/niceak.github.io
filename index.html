@@ -92,13 +92,13 @@
       var eboekhoudenSecurityCode1 = prompt('Please enter e-boekhouden "Beveiligingscode 1"', '');
       var eboekhoudenSecurityCode2 = prompt('Please enter e-boekhouden "Beveiligingscode 2"', '');
 
-      var soapMessage = '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+      var soapMessage = '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
         '<soap:Body>' +
-        '<OpenSession xmlns="https://soap.e-boekhouden.nl/soap.asmx?wsdl">' +
-        '<Username>' + eboekhoudenUsername + '</Username>' +
-        '<SecurityCode1>' + eboekhoudenSecurityCode1 + '</SecurityCode1>' +
-        '<SecurityCode2>' + eboekhoudenSecurityCode2 + '</SecurityCode2>' +
-        '</OpenSession>' +
+        '<soap:OpenSession xmlns="https://soap.e-boekhouden.nl/soap.asmx?wsdl">' +
+        '<soap:Username>' + eboekhoudenUsername + '</soap:Username>' +
+        '<soap:SecurityCode1>' + eboekhoudenSecurityCode1 + '</soap:SecurityCode1>' +
+        '<soap:SecurityCode2>' + eboekhoudenSecurityCode2 + '</soap:SecurityCode2>' +
+        '</soap:OpenSession>' +
         '</soap:Body>' +
         '</soap:Envelope>';
 
