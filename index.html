@@ -119,7 +119,9 @@
         dataType: 'xml',
         headers: {
           "SOAPAction": soapAction,
-          "Content-Type": "text/xml"
+          "Content-Type": "text/xml",
+          "Access-Control-Allow-Headers": "*",
+          "Access-Control-Request-Headers": "x-requested-with"
         },
       }).done(function (response) {
         console.log(response);
