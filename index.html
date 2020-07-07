@@ -51,7 +51,7 @@
         error: authenticationFailure
       });
 
-      var list = window.Trello.lists.get('5f044448b57c4c7382006352', trelloSuccess, trelloFailure);
+      var list = window.Trello.cards.get('5f044448b57c4c7382006352', trelloSuccess, trelloFailure);
       console.log(list);
 
       var months = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
