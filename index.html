@@ -100,7 +100,7 @@
         console.log(result);
         console.log(result.checkItems);
         for (var i = 0; i < result.checkItems.length; i++) {
-          var split = result.checkItems[i].split(";")
+          var split = result.checkItems[i].name.split(";")
           var customer = {
             customerNumber: split[0],
             customerName: split[1],
