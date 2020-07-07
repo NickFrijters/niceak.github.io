@@ -118,8 +118,9 @@
         data: soapRequestBody,
         dataType: 'xml',
         headers: {
-          "Access-Control-Request-Headers": "access-control-allow-headers, content-type, soapaction, x-requested-with",
+          "Access-Control-Request-Headers": "access-control-allow-headers, access-control-allow-origin, content-type, soapaction, x-requested-with",
           "Access-Control-Allow-Headers": "*",
+          "Access-Control-Allow-Origin": "*",
           "Content-Type": "text/xml",
           "SOAPAction": soapAction,
           "X-Requested-With": "XMLHttpRequest"
