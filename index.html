@@ -91,21 +91,29 @@
       var eboekhoudenSecurityCode1 = prompt('Please enter e-boekhouden "Beveiligingscode 1"', '');
       var eboekhoudenSecurityCode2 = prompt('Please enter e-boekhouden "Beveiligingscode 2"', '');
 
-      $.soap({
+      var soapMessage = '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+        '<soap:Body>' +
+        '<OpenSession xmlns="https://soap.e-boekhouden.nl/soap.asmx?wsdl">' +
+        '<Username>' + eboekhoudenUsername + '</Username>' +
+        '<SecurityCode1>' + eboekhoudenSecurityCode1 + '</SecurityCode1>' +
+        '<SecurityCode2>' + eboekhoudenSecurityCode2 + '</SecurityCode2>' +
+        '</OpenSession>' +
+        '</soap:Body>' +
+        '</soap:Envelope>';
+
+      console.log('E-Boekhouden Request Sent');
+      console.log(soapMessage);
+
+      $.ajax({
         url: eboekhoudenBaseUrl,
-        data: {
-          Username: eboekhoudenUsername,
-          SecurityCode1: eboekhoudenSecurityCode1,
-          SecurityCode2: eboekhoudenSecurityCode2
-        },
-        success: function(response) {
+        type: 'POST',
+        dataType: 'xml',
+        data: soapMessage,
+        complete: function (response) {
           console.log('E-Boekhouden Request: Successful');
           console.log(response);
         },
-        error: function (response) {
-          console.log('E-Boekhouden Request: Failure');
-          console.log(response);
-        }
+        contentType: 'text/xml; charset="utf-8"'
       });
 
       /*
