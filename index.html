@@ -85,6 +85,8 @@
       /*
         E-Boekhouden Start
         https://secure.e-boekhouden.nl/handleiding/Documentatie_soap.pdf
+        https://soap.e-boekhouden.nl/soap.asmx?WSDL
+        https://wsdlbrowser.com/
        */
 
       var eboekhoudenBaseUrl = 'https://soap.e-boekhouden.nl/soap.asmx?WSDL';
@@ -92,15 +94,16 @@
       var eboekhoudenSecurityCode1 = prompt('Please enter e-boekhouden "Beveiligingscode 1"', '');
       var eboekhoudenSecurityCode2 = prompt('Please enter e-boekhouden "Beveiligingscode 2"', '');
 
-      var soapMessage = '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">' +
-        '<soap:Body>' +
-        '<soap:OpenSession>' +
-        '<soap:Username>' + eboekhoudenUsername + '</soap:Username>' +
-        '<soap:SecurityCode1>' + eboekhoudenSecurityCode1 + '</soap:SecurityCode1>' +
-        '<soap:SecurityCode2>' + eboekhoudenSecurityCode2 + '</soap:SecurityCode2>' +
-        '</soap:OpenSession>' +
-        '</soap:Body>' +
-        '</soap:Envelope>';
+      var soapMessage = '<?xml version="1.0" encoding="UTF-8"?>' +
+        '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.e-boekhouden.nl/soap">' +
+        '<SOAP-ENV:Body>' +
+        '<ns1:OpenSession>' +
+        '<ns1:Username>' + eboekhoudenUsername + '</ns1:Username>' +
+        '<ns1:SecurityCode1>' + eboekhoudenSecurityCode1 + '</ns1:SecurityCode1>' +
+        '<ns1:SecurityCode2>' + eboekhoudenSecurityCode2 + '</ns1:SecurityCode2>' +
+        '</ns1:OpenSession>' +
+        '</SOAP-ENV:Body>' +
+        '</SOAP-ENV:Envelope>';
 
       console.log('E-Boekhouden Request Sent');
       console.log(soapMessage);
