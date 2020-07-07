@@ -19,7 +19,31 @@
         padding-left: 0px;
       }
     </style>
+    <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+    <script src="https://api.trello.com/1/client.js?key=4c199ea635860bca26b23270f0d7bf1e"></script>
     <script>
+      var authenticationSuccess = function() {
+        console.log('Successful authentication' + Trello.token());
+      };
+
+      var authenticationFailure = function() {
+        console.log('Failed authentication');
+      };
+
+      window.Trello.authorize({
+        type: 'popup',
+        name: 'Getting Started Application',
+        scope: {
+          read: 'true',
+          write: 'true' },
+        expiration: 'never',
+        success: authenticationSuccess,
+        error: authenticationFailure
+      });
+
       var months = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
       var customers = [
         {
