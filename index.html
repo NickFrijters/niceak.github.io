@@ -25,19 +25,22 @@
     crossorigin="anonymous"></script>
     <script src="https://api.trello.com/1/client.js?key=4c199ea635860bca26b23270f0d7bf1e"></script>
     <script>
-      var authenticationSuccess = function() {
-        console.log('Trello: Successful authentication with token [' + Trello.token() + ']');
+      var trelloAuthenticationSuccess = function() {
+        console.log('Trello Authentication: Successful with token [' + Trello.token() + ']');
       };
 
-      var authenticationFailure = function() {
-        console.log('Trello: Failed authentication');
+      var trelloAuthenticationFailure = function() {
+        console.log('Trello Authentication: Failed');
       };
 
-      var trelloSuccess = function() {
-        console.log('Trello: Request success');
+      var trelloGetCustomersSuccess = function(result) {
+        console.log('Trello Get Customers: Success');
+        console.log(result);
+        console.log(result.checkItems);
       };
-      var trelloFailure = function() {
-        console.log('Trello: Request failure');
+
+      var trelloGetCustomersFailure = function() {
+        console.log('Trello Get Customers: Failed');
       };
 
       window.Trello.authorize({
@@ -47,12 +50,9 @@
           read: 'true',
           write: 'true' },
         expiration: 'never',
-        success: authenticationSuccess,
-        error: authenticationFailure
+        success: trelloAuthenticationSuccess,
+        error: trelloAuthenticationFailure
       });
-
-      var data = window.Trello.checklists.get('5f04446286227357e05bb844', trelloSuccess, trelloFailure);
-      console.log(data.checkitems);
 
       var months = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
       var customers = [
