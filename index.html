@@ -112,12 +112,15 @@
       console.log(soapRequestBody);
 
       $.ajax({
-        "url": eboekhoudenBaseUrl,
-        "method": "POST",
-        "headers": {
+        url: eboekhoudenBaseUrl,
+        method: 'POST',
+        crossDomain: true,
+        data: soapRequestBody,
+        dataType: 'xml',
+        headers: {
           "SOAPAction": soapAction,
-          "Content-Type": "text/xml",
-        }
+          "Content-Type": "text/xml"
+        },
       }).done(function (response) {
         console.log(response);
       });
