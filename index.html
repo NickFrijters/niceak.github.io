@@ -54,6 +54,8 @@
         error: trelloAuthenticationFailure
       });
 
+      window.Trello.checklists.get('5f04446286227357e05bb844', trelloGetCustomersSuccess, trelloGetCustomersFailure);
+
       var months = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
       var customers = [
         {
