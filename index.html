@@ -1,0 +1,521 @@
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+    <style>
+      .bullet {
+        display: inline-block;
+        width: 16px;
+        text-align: center;
+      }
+      #menuWrapper {
+        overflow: hidden;
+      }
+      #logo {
+        float: left;
+      }
+      ul {
+        list-style-type: none;
+        padding-left: 0px;
+      }
+    </style>
+    <script>
+      var months = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
+      var customers = [
+        {
+          customerNumber: 'Z000002',
+          customerName: 'R. Tvrda',
+          customerContact: 'Romana',
+          customerOptionWeSaveTaxes: true,
+          customerOptionPaymentRequest: false,
+          customerOptionWorksOver1225: true,
+          customerOptionStarter: 1 //2019
+        },
+        {
+          customerNumber: 'Z000004',
+          customerName: 'Time 2 Pierce',
+          customerContact: 'Tessa',
+          customerOptionWeSaveTaxes: true,
+          customerOptionPaymentRequest: false,
+          customerOptionWorksOver1225: true,
+          customerOptionStarter: 1 //2019
+        },
+        {
+          customerNumber: 'Z000005',
+          customerName: 'Jve Services',
+          customerContact: 'Jacqueline',
+          customerOptionWeSaveTaxes: true,
+          customerOptionPaymentRequest: true,
+          customerOptionWorksOver1225: false,
+          customerOptionStarter: 0
+        },
+        {
+          customerNumber: 'Z000007',
+          customerName: 'T.J. Cleaning',
+          customerContact: 'Jolanda',
+          customerOptionWeSaveTaxes: false,
+          customerOptionPaymentRequest: false,
+          customerOptionWorksOver1225: false,
+          customerOptionStarter: 0
+        },
+        {
+          customerNumber: 'Z000009',
+          customerName: 'Ladyservice',
+          customerContact: 'Linda',
+          customerOptionWeSaveTaxes: true,
+          customerOptionPaymentRequest: true,
+          customerOptionWorksOver1225: false,
+          customerOptionStarter: 0
+        },
+        {
+          customerNumber: 'Z000010',
+          customerName: 'Praktijk Handbereik',
+          customerContact: 'Miranda',
+          customerOptionWeSaveTaxes: true,
+          customerOptionPaymentRequest: false,
+          customerOptionWorksOver1225: false,
+          customerOptionStarter: 0
+        }
+      ];
+      var activeWorkload = -1;
+      var workloads = [
+        {
+          id: '0',
+          title: 'Bon invoeren',
+          steps: [
+            {type: 'input-checkbox', summary: 'Digitaal Archief: ', description: 'Is de bon al geüploaded naar het Digitaal Archief in e-boekhouden?', inputId: 'digitalArchive'},
+            {type: 'info', classId: 'inArchive', summary: 'Navigeer naar Boekstuk invoeren', description: 'Log in op <a href="http://secure.e-boekhouden.nl/" target="_blank">e-boekhouden</a><br/>Klik op "Openen" bij de juiste boekhouding<br/>Klik op tabblad "Boekhouden"<br/>Klik op "Digitaal archief" bij "Overig"<br/>Klik met de rechter muisknop op de bon<br/>Klik op "Invoeren als mutatie"<br/>'},
+            {type: 'info', classId: 'notInArchive', summary: 'Navigeer naar Boekstuk invoeren', description: 'Log in op <a href="http://secure.e-boekhouden.nl/" target="_blank">e-boekhouden</a><br/>Klik op "Openen" bij de juiste boekhouding<br/>Klik op tabblad "Boekhouden"<br/>Klik op "Afschift/bonnetjes" bij "Invoeren"<br/>'},
+            {type: 'info', summary: 'Voer de gegevens van de boeking in', description: '<b>Soort boeking:</b> "Geld ontvangen" of "Geld uitgegeven"<br/><b>Rekening:</b> Laat deze op de standaard waarde staan<br/><b>Datum:</b> De datum waarop het geld is ontvangen of uitgegeven<br/><b>Omschrijving:</b> Leeg laten<br/><b>Boekstuk:</b> Leeg laten<br/><b>De bedragen die u invoert zijn:</b> <i>Welke optie je hier kiest maakt niet uit, als de bedragen die je hierna invult maar overeen komen met de bedragen op de bon</i><br/>Per "Tegenrekening" voer je vervolgens een regel met bedragen in. Inkomsten zijn altijd "8000 Omzet". Meestal is er maar één Tegenrekening (bijvoorbeeld "4810 Accountants- en administratiekosten") maar bij inkopen in een warenhuis kan het voorkomen dat op één bon artikelen staan die onder meerdere Tegenrekeningen vallen (Bijvoorbeeld: Papier "4700 Kantoorbenodigdheden" en een Wol "4720 Materiaal". Het totaal van de bon moet overeenkomen met het totaal van alle regels.'},
+            {type: 'info', classId: 'notInArchive', summary: 'Bestanden toevoegen', description: 'Gebruik de knop "Bestanden toevoegen +" onderaan de pagina om de bon te uploaden.<br/>Klik eerst op de knop en sleep vervolgens bestanden vanaf de computer in het venster óf gebruik de knop "Bestanden toevoegen" in het venster om de bestanden te selecteren.<br/>Klik op "Start Upload"'},
+            {type: 'info', summary: 'Klik op "Opslaan"'}
+          ]
+        },
+        {
+          id: '1',
+          title: 'Factuur invoeren',
+          steps: [
+            {type: 'input-checkbox', summary: 'Digitaal Archief: ', description: 'Is de factuur al geüploaded naar het Digitaal Archief in e-boekhouden?', inputId: 'digitalArchive'},
+            {type: 'info', classId: 'inArchive', summary: 'Navigeer naar Boekstuk invoeren', description: 'Log in op <a href="http://secure.e-boekhouden.nl/" target="_blank">e-boekhouden</a><br/>Klik op "Openen" bij de juiste boekhouding<br/>Klik op tabblad "Boekhouden"<br/>Klik op "Digitaal archief" bij "Overig"<br/>Klik met de rechter muisknop op de bon<br/>Klik op "Invoeren als mutatie"<br/>'},
+            {type: 'info', classId: 'notInArchive', summary: 'Navigeer naar Boekstuk invoeren', description: 'Log in op <a href="http://secure.e-boekhouden.nl/" target="_blank">e-boekhouden</a><br/>Klik op "Openen" bij de juiste boekhouding<br/>Klik op tabblad "Boekhouden"<br/>Klik op "Facturen" bij "Invoeren"<br/>'},
+            {type: 'info', summary: 'Voer de gegevens van de factuur in', description: '<b>Soort boeking:</b> "Factuur ontvangen" of "Factuur verstuurd"<br/><b>Relatie:</b> De relatie waaraan het geld  is uitgegeven. Als de relatie nog niet bestaat, voeg deze dan toe met het plusje (+) rechts van de regel waarbij je alleen het veld "Bedrijf" hoeft in te voeren en vervolgens op "Opslaan" klikt.<br/><b>Datum:</b> De datum waarop de factuur is ontvangen of verstuurd<br/><b>Omschrijving:</b> Leeg laten<br/><b>Factuurnummer:</b> Vul hier het factuurnummer in<br/><b>Betalingstermijn:</b> Vul hier de betalingstermijn in (Onbekend of een iDeal betaling? Vul dan 0 in)<br/><b>De bedragen die u invoert zijn:</b> <i>Welke optie je hier kiest maakt niet uit, als de bedragen die je hierna invult maar overeen komen met de bedragen op de factuur</i><br/>Per "Tegenrekening" voer je vervolgens een regel met bedragen in. Inkomsten zijn altijd "8000 Omzet". Meestal is er maar één Tegenrekening (bijvoorbeeld "4810 Accountants- en administratiekosten") maar bij inkopen in een warenhuis kan het voorkomen dat op één bon artikelen staan die onder meerdere Tegenrekeningen vallen (Bijvoorbeeld: Papier "4700 Kantoorbenodigdheden" en een Wol "4720 Materiaal". Het totaal van de factuur moet overeenkomen met het totaal van alle regels.'},
+            {type: 'info', classId: 'notInArchive', summary: 'Bestanden toevoegen', description: 'Gebruik de knop "Bestanden toevoegen +" onderaan de pagina om de bon te uploaden.<br/>Klik eerst op de knop en sleep vervolgens bestanden vanaf de computer in het venster óf gebruik de knop "Bestanden toevoegen" in het venster om de bestanden te selecteren.<br/>Klik op "Start Upload"'},
+            {type: 'info', summary: 'Klik op "Opslaan"'},
+            {type: 'info', summary: 'Navigeer naar Boekstuk invoeren', description: 'Log in op <a href="http://secure.e-boekhouden.nl/" target="_blank">e-boekhouden</a><br/>Klik op "Openen" bij de juiste boekhouding<br/>Klik op tabblad "Boekhouden"<br/>Klik op "Afschift/bonnetjes" bij "Invoeren"<br/>'},
+            {type: 'info', summary: 'Voer de gegevens van de factuurbetaling in', description: '<b>Soort boeking:</b> "Factuurbetaling verstuurd" of "Factuurbetaling ontvangen"<br/><b>Rekening:</b> Laat deze op de standaard waarde staan<br/><b>Open post:</b>Klik op het vergrootglas en kies de bijbehorende factuur<b>Datum:</b> De datum waarop het geld is ontvangen of uitgegeven<br/><b>Omschrijving:</b> Laat staan op "Betaling"<br/><b>Boekstuk:</b> Leeg laten'},
+            {type: 'info', summary: 'Klik op "Opslaan"'}
+          ]
+        },
+        {
+          id: '2',
+          title: 'Factuur maken (van abonnement)',
+          steps: [
+            {type: 'info', summary: 'Navigeer naar de facturen voor abonnementen', description: 'Log in op <a href="http://secure.e-boekhouden.nl/" target="_blank">e-boekhouden</a><br/>Klik op "Openen" bij Nice Administratiekantoor<br/>Klik op tabblad "Factureren"<br/>Klik op "Facturen maken" bij "Abonnementen"'},
+            {type: 'info', summary: 'Genereer de facturen', description: 'Selecteer welke facturen je (alvast) wil maken. Als je dit doet tijdens de maandwissel dan wil je waarschijnlijk kiezen voor "Reeds is verlopen" omdat dat alle maandfacturen standaard op de eerste dag staan. Dus vanaf de eerste dag zijn die verlopen. Tussen haakjes staat hoeveel facturen gegenereerd zullen worden.<br/>Laat de Betalingstermijn op 14 dagen staan.<br/>Vink "Facturen direct verwerken in de boekhouding" aan zodat je niet voor elke factuur een mutatie hoeft aan te maken.<br/><b>Let op:</b> Voor sommige klanten moet de standaard abonnementfactuur nog worden aangepast, bijvoorbeeld als het aantal werknemers (op de factuur: Loonadministratie) van maand tot maand kan verschillen. Controleer daarom altijd goed de gegenereerde facturen.<br/>Klik op "Verder"</b>'},
+            {type: 'info', summary: 'Navigeer naar de gemaakte facturen', description: 'Klik op "Overzicht" bij "Facturen"<br/><b>Let op:</b> Klik dus <u>niet</u> op "Overzicht" bij "Standaard Facturen"'},
+            {type: 'info', summary: 'Controleer de facturen', description: 'Voor elke zojuist gemaakte factuur (deze staan standaard bovenaan, kijk voor de zekerheid naar "Datum") klik je links ervan op het printertje.<br/>Als de factuur is gedownload open je deze, en controleer je of linksboven de juiste klant staat en alle factuurregels in orde zijn voor deze klant.'}
+          ]
+        },
+        {
+          id: '3',
+          title: 'Factuur versturen',
+          steps: [
+            {type: 'input-dropdown', summary: 'Selecteer klant: ', inputId: 'customer'},
+            {type: 'input-text', summary: 'Klantnummer: ', inputId: 'number'},
+            {type: 'input-text', summary: 'Roepnaam klant: ', inputId: 'name'},
+            {type: 'input-checkbox', summary: 'Betaalverzoek: ', inputId: 'sendPaymentRequest'},
+            {type: 'info', summary: 'Navigeer naar de factuur', description: 'Log in op <a href="http://secure.e-boekhouden.nl/" target="_blank">e-boekhouden</a><br/>Klik op "Openen" bij Nice Administratiekantoor<br/>Klik op tabblad "Factureren"<br/>Klik op "Overzicht" bij "Facturen"<br/>Selecteer relatie <span class="number"/><br/>Klik op "Zoeken"<br/>Zoek de juiste factuur'},
+            {type: 'input-text', summary: 'Factuurnummer: ', inputId: 'invoice'},
+            {type: 'info', summary: 'Download de factuur', description: 'Klik op het printer-icoontje vóór factuur <span class="invoice"/><br/>Een lege pop-up opent waarin het bestand wordt gedownload, je vindt het bestand in de Downloads map.<br/>De pop-up kun je weer wegklikken.'},
+            {type: 'info', summary: 'Hernoem de factuur naar "<b><span class="invoice"/>.pdf</b>"', description: 'Ga naar de map waar het bestand is gedownload en pas de naam van het bestand aan naar "<b><span class="invoice"/>.pdf</b>"'},
+            {type: 'info', summary: 'Stel een nieuwe e-mail op met de volgende gegevens:', description: 'Het e-mail adres wordt automatisch ingevuld als je in het "Aan" veld de naam of het klantnummer intypt.'},
+            {type: 'info', summary: 'Onderwerp: <br/><textarea id="mailSubject" cols="48" rows="1"></textarea>'},
+            {type: 'info', summary: 'Bericht: <br/><textarea id="mailContent" cols="48" rows="18"></textarea>'},
+            {type: 'info', summary: 'Bijlage: "<b><span class="invoice"/>.pdf</b>"'},
+            {type: 'info', summary: 'Verzend de e-mail'},
+            {type: 'info', classId: 'betaalverzoek', summary: 'Stuur een betaalverzoek via WhatsApp', description: '<a href="https://mijnzakelijk.ing.nl/login/?eai=true&Target=https://mijnzakelijk.ing.nl%2Fzakelijk%2Fbetalen%2Fbetaalverzoek%2Findex" target="_blank">Betaalverzoek maken met ING internetbankieren</a><br/>of<br/><a href="https://www.ing.nl/particulier/mobiel-en-internetbankieren/mobiel-bankieren-app/wat-kan-ik-met-de-app/betaalverzoek.html" target="_blank">Betaalverzoek maken met de ING app</a>'}
+          ]
+        },
+        {
+          id: '4',
+          title: 'Factuur betalingsherinnering',
+          steps: [
+            {type: 'input-dropdown', summary: 'Selecteer klant: ', inputId: 'customer'},
+            {type: 'input-text', summary: 'Klantnummer: ', inputId: 'number'},
+            {type: 'input-text', summary: 'Roepnaam klant: ', inputId: 'name'},
+            {type: 'input-text', summary: 'Factuurnummer: ', inputId: 'invoice'},
+            {type: 'info', summary: 'Stel een nieuwe e-mail op met de volgende gegevens:', description: 'Het e-mail adres wordt automatisch ingevuld als je in het "Aan" veld de naam of het klantnummer intypt.'},
+            {type: 'info', summary: 'Onderwerp: <br/><textarea id="mailSubject" cols="48" rows="1"></textarea>'},
+            {type: 'info', summary: 'Bericht: <br/><textarea id="mailContent" cols="48" rows="18"></textarea>'},
+            {type: 'info', summary: 'Bijlage: "<b>Algemene Voorwaarden Nice Administratiekantoor</b>"'},
+            {type: 'info', summary: 'Bijlage: "<b><span class="invoice"/>.pdf</b>"'},
+            {type: 'info', summary: 'Verzend de e-mail'}
+          ]
+        },
+        {
+          id: '5',
+          title: 'BTW Aangifte',
+          steps: [
+            {type: 'info', summary: 'Todo...'}
+          ]
+        },
+        {
+          id: '6',
+          title: 'Maandafsluiting',
+          steps: [
+            {type: 'input-dropdown', summary: 'Selecteer klant: ', inputId: 'customer'},
+            {type: 'input-text', summary: 'Klantnummer: ', inputId: 'number'},
+            {type: 'input-text', summary: 'Roepnaam klant: ', inputId: 'name'},
+            {type: 'input-checkbox', summary: 'Belastingsparen: ', inputId: 'weSaveTaxes'},
+            {type: 'input-checkbox', summary: 'Zelfstandigenaftrek: ', description: 'Als de klant meer dan 1225 uur per jaar werkt, dan heeft hij recht op zelfstandigenaftrek', inputId: 'deduction'},
+            {type: 'input-checkbox', classId: 'zelfstandigenaftrek', summary: 'Starterskorting: ', description: 'Als de klant minder dan 5 jaar geleden is gestart, én nog geen drie jaren heeft geprofiteerd van startersaftrek, dan heeft hij recht op starterskorting', inputId: 'starter'},
+            {type: 'info', summary: 'Gebruik deze werkinstructie NIET als de klant de AOW-leeftijd heeft bereikt', description: 'Als de klant de AOW-leeftijd heeft bereikt, moeten alle bedragen voor het belastingsparen <b>met de hand</b> worden berekend. Er gelden dan andere belastingtarieven!'},
+            {type: 'info', summary: 'Download het maandoverzicht', description: 'Log in op <a href="http://secure.e-boekhouden.nl/" target="_blank">e-boekhouden</a><br/>Klik op "Openen" bij <span class="number"/><br/>Klik op tabblad "Boekhouden"<br/>Klik op "Winst & Verlies" bij "Overzichten"<br/>Selecteer "Per maand"<br/>Selecteer "' + getLastMonthName() + '"<br/>Selecteer "' + getLastMonth().substr(0, 4) + '"<br/>Klik op "Verder"<br/>Download de PDF'},
+            {type: 'info', summary: 'Hernoem het maandoverzicht naar "<b><span class="number"/> ' + getLastMonth() + ' Maandafsluiting.pdf</b>"', description: 'Ga naar de map waar het bestand is gedownload en pas de naam van het bestand aan naar "<b><span class="number"/> ' + getLastMonth() + ' Maandafsluiting.pdf</b>"'},
+            {type: 'info', summary: 'Check het maandoverzicht', description: 'Open het bestand en controleer of linksboven de juiste klantgegevens staan'},
+            {type: 'input-text', summary: 'Winst of verlies dit jaar:', description: 'Ga terug naar e-boekhouden<br/>Selecteer "Per jaar"<br/>Selecteer "' + getLastMonth().substring(0, 4) + '"<br/>Klik op "Verder"<br/>Scroll omlaag naar de onderste regel en kijk of daar "Saldo winst" of "Saldo verlies" staat<br/>Als er "Saldo verlies" staat, vul dan bij de volgende stap een min-teken "-" voor het bedrag in', inputId: 'profit'},
+            {type: 'input-text', summary: 'Winst 3 maanden geleden: ', description: 'Selecteer "Per maand"<br/>Ga nu voor de afgelopen drie maanden steeds op dezelfde manier het "Saldo winst/verlies" invoeren', inputId: 'profitMonth1'},
+            {type: 'input-text', summary: 'Winst 2 maanden geleden: ', description: 'Selecteer "Per maand"<br/>Ga nu voor de afgelopen drie maanden steeds op dezelfde manier het "Saldo winst/verlies" invoeren', inputId: 'profitMonth2'},
+            {type: 'input-text', summary: 'Winst 1 maand geleden: ', description: 'Selecteer "Per maand"<br/>Ga nu voor de afgelopen drie maanden steeds op dezelfde manier het "Saldo winst/verlies" invoeren', inputId: 'profitMonth3'},
+            {type: 'input-text', summary: 'BTW-bedrag: ', description: 'Klik op "BTW-aangifte" bij "Aangiftes"<br/>Selecteer "Kwartaal"<br/>Selecteer "' + getLastMonth().substring(0, 4) + '"<br/>Selecteer "' + getLastMonthQuarter() + ' kwartaal"<br/>Klik op "Verder"<br/>Als de klant meedoet aan de KOR: Scroll omlaag naar regel "2a" en kijk naar het getal in de meest rechter kolom<br/>Als de klant NIET meedoet aan de KOR: Scroll omlaag naar regel "5g" en kijk naar het getal in de meest rechter kolom', inputId: 'btw'},
+            {type: 'input-text', classId: 'belastingsparen', summary: 'Saldo belastingsparen: ', description: 'Navigeer in Google Drive naar het bestand "Boekhouding"<br/>Klik op het tabblad "Belastingsparen"<br/>Sorteer op kolom C, "Klantnummer" door je muis op de "C" te houden, op het pijltje te klikken dat verschijnt, en klik daarna op "Sort sheet A -> Z"<br/>Selecteer in kolom B, "Mutatie" alle bedragen die vóór de klant staan waar je nu mee bezig bent<br/>Rechtsonder verschijnt een veld waar staat "Sum:" met een bedrag erachter. Vul dat bedrag hier in: ', inputId: 'savings'},
+            {type: 'info', classId: 'belastingsparen', summary: 'Maak het overzicht belastingsparen met de volgende informatie:', description: 'Navigeer in Google Driver naar de map "Maandoverzichten"<br/>Open het tekstbestand van de klant waar je nu mee bezig bent<br/>Pas de bestandsnaam aan naar deze maand: ' + getLastMonth() + '<br/>Pas de tabel aan zodat deze de volgende rijen bevat:'},
+            {type: 'info', classId: 'belastingsparen', summary: 'Inkomstenbelasting 2020 (inschatting) / €<span class="taxesIB"/> '},
+            {type: 'info', classId: 'belastingsparen', summary: 'Omzetbelasting 2020 (inschatting) / €<span class="taxesBTW"/> '},
+            {type: 'info', classId: 'belastingsparen', summary: '<b>Totaal</b> / € ... (inkomstenbelasting 2019 + inkomstenbelasting 2020 + omzetbelasting 2020)'},
+            {type: 'info', classId: 'belastingsparen', summary: 'Reeds gespaard / € <span class="savings"/>'},
+            {type: 'info', classId: 'belastingsparen', summary: '<b>Te sparen</b> / € ... (totaal - reeds gespaard)'},
+            {type: 'info', classId: 'belastingsparen', summary: 'Download het overzicht belastingsparen', description: 'Klik op "File" > "Download" > "PDF Document (.pdf)"'},
+            {type: 'info', summary: 'Stel een nieuwe e-mail op met de volgende gegevens:', description: 'Het e-mail adres wordt automatisch ingevuld als je in het "Aan" veld de naam of het klantnummer intypt.'},
+            {type: 'info', summary: 'Onderwerp: <br/><textarea id="mailSubject" cols="48" rows="1"></textarea>'},
+            {type: 'info', summary: 'Bericht: <br/><textarea id="mailContent" cols="48" rows="18"></textarea>'},
+            {type: 'info', summary: 'Bijlage: "<b><span class="number"/> ' + getLastMonth() + ' Maandafsluiting.pdf</b>"'},
+            {type: 'info', classId: 'belastingsparen', summary: 'Bijlage: "<b><span class="number"/> ' + getLastMonth() + ' Belastingsparen.pdf</b>"'},
+            {type: 'info', summary: 'Verzend de e-mail'}
+          ]
+        }
+      ];
+
+      function initialize() {
+        for (var i = 0; i < workloads.length; i++) {
+          $('#menu').append('<button id="' + workloads[i].id + '">' + workloads[i].title + '</button><br/>');
+          $('#' + workloads[i].id).click(function() {
+            activeWorkload = $(this)[0].id;
+            $('#steps').empty();
+            $('#instructions').empty();
+            for (var j = 0; j < workloads[$(this)[0].id].steps.length; j++) {
+              var steps = workloads[$(this)[0].id].steps;
+              var varInput = null;
+              var varClass = null;
+              if (steps.type !== 'text') {
+                varInput = steps[j].inputId;
+              }
+              if (steps[j].classId) {
+                varClass = steps[j].classId;
+              }
+              var varDescription = steps[j].description ? steps[j].description : '';
+              $('#instructions').append(buildInstruction($(this)[0].id, j, varClass, steps[j].type, steps[j].summary, varDescription, varInput));
+            }
+            createCustomers();
+          });
+        }
+      }
+
+      function update(id) {
+        if (id === 'customer') {
+          //Maandafsluiting
+          $('#profit').val('');
+          $('#profitMonth1').val('');
+          $('#profitMonth2').val('');
+          $('#profitMonth3').val('');
+          $('#btw').val('');
+          $('#savings').val('');
+
+          $('.taxesib').text('');
+          $('.taxesbtw').text('');
+          $('.savings').text('');
+
+          //Factuur versturen
+          $('#invoice').val('');
+        }
+
+        $('.' + id).each(function() {
+          $(this).text($('#' + id).val());
+        });
+
+        if ($('#digitalArchive').prop('checked')) {
+          $('.inArchive').show();
+          $('.notInArchive').hide();
+        } else {
+          $('.inArchive').hide();
+          $('.notInArchive').show();
+        }
+
+        if ($('#sendPaymentRequest').prop('checked')) {
+          $('.betaalverzoek').show();
+        } else {
+          $('.betaalverzoek').hide();
+        }
+
+        if ($('#weSaveTaxes').prop('checked')) {
+          $('.belastingsparen').show();
+        } else {
+          $('.belastingsparen').hide();
+        }
+
+        if ($('#deduction').prop('checked')) {
+          $('.zelfstandigenaftrek').show();
+        } else {
+          $('.zelfstandigenaftrek').hide();
+        }
+
+        $('.taxesIB').text(Math.ceil(getTaxesIB()));
+        $('.taxesBTW').text(Math.ceil(getTaxesBTW()));
+
+        switch (activeWorkload) {
+          case '6':
+            createMonthMail();
+            break;
+          case '3':
+            createInvoiceMail();
+            break;
+          case '4':
+            createReminderMail();
+            break;
+        }
+
+        //Customer
+        if (id === 'customer') {
+          var clicked = $('#' + id).val();
+          for (var i = 0; i < customers.length; i++) {
+            if (customers[i].customerNumber === clicked) {
+              $('#number').val(customers[i].customerNumber);
+              $('#number').prop('disabled', true);
+              update('number');
+
+              $('#name').val(customers[i].customerContact);
+              $('#name').prop('disabled', true);
+              update('name');
+
+              $('#weSaveTaxes').prop('checked', customers[i].customerOptionWeSaveTaxes);
+              update('weSaveTaxes');
+
+              $('#sendPaymentRequest').prop('checked', customers[i].customerOptionPaymentRequest);
+              update('sendPaymentRequest');
+
+              $('#deduction').prop('checked', customers[i].customerOptionWorksOver1225);
+              $('#deduction').prop('disabled', true);
+              update('deduction');
+
+              $('#starter').prop('checked', customers[i].customerOptionWorksOver1225 && (customers[i].customerOptionStarter < 3));
+              $('#starter').prop('disabled', true);
+              update('starter');
+            }
+          }
+        }
+      }
+
+      function setTitle(title) {
+        $('#title').text(title);
+      }
+
+      function toggleDescription(descriptionId) {
+        console.log(descriptionId);
+        var description = document.getElementById(descriptionId);
+        if (description.style.display === null || description.style.display === "none") {
+          description.style.display = "block";
+        } else {
+          description.style.display = "none";
+        }
+      }
+
+      function buildInstruction(workloadId, instructionId, classId, type, summary, description, inputId) {
+        var interaction = '';
+        if (description != '') {
+          var descriptionId = workloadId + '.' + instructionId + '.description';
+          description = '<i class="icon ion-md-information-circle-outline" onclick="toggleDescription(\'' + descriptionId + '\')"></i><span id="' + descriptionId + '" style="display: none; color: #999999"><br/>' + description + '<br/><br/></span>';
+        }
+
+        switch (type) {
+          case 'input-dropdown':
+            switch (inputId) {
+              case 'customer':
+                interaction = '<select id="' + inputId + '" oninput="update(\'' + inputId + '\')"></select>';
+                break;
+            }
+            break;
+          case 'input-text':
+            interaction = '<input type="text" id="' + inputId + '" oninput="update(\'' + inputId + '\')"></input>';
+            break;
+          case 'input-checkbox':
+            interaction = '<input type="checkbox" id="' + inputId + '" oninput="update(\'' + inputId + '\')"></input>';
+            break;
+        }
+
+        return '<li id="' + workloadId + '.' + instructionId + '" class="' + classId + '"><input type="checkbox"></input>' + summary + ' ' + description + ' ' + interaction + '</li>';
+      }
+
+      function createCustomers() {
+        $('<option hidden disabled selected value>Selecteer klant</option>').appendTo($('#customer'));
+        for (var i = 0; i < customers.length; i++) {
+          var cust = customers[i].customerNumber + ' - ' + customers[i].customerName + ' - ' + customers[i].customerContact;
+          $('<option />', {value: customers[i].customerNumber, text: cust}).appendTo($('#customer'));
+        }
+        update(null);
+      }
+
+      function createMonthMail() {
+        // Mail Subject
+        $('#mailSubject').text($('#number').val() + ': Maandafsluiting ' + getLastMonth());
+
+        // Mail Content
+        var taxesText = '';
+        if ($('#weSaveTaxes').prop('checked')) {
+          taxesText = '\n\nWij verzorgen het sparen van de BTW en/of Inkomstenbelasting voor je. Meer details kun je terugvinden in de bijlage.';
+        } else {
+          taxesText = '\n\nJe hebt er voor gekozen om zelf het geld voor de BTW en/of Inkomstenbelasting te sparen. Op basis van de gegevens die we van je hebben raden we je aan om het volgende bedrag te sparen voor de Omzetbelasting:\nOmzetbelasting (BTW): € ' + Math.ceil(getTaxesBTW());
+        }
+        $('#mailContent').text('Beste ' + $('#name').val() + ',\n\nWe hebben je boekhouding voor de maand ' + getLastMonth() + ' verwerkt. Het resultaat hiervan kun je vinden in de bijlage(n).' + taxesText + '\n\nLet op: bij het (advies voor) belasting sparen wordt alleen rekening gehouden met de inkomsten uit de onderneming waarvoor wij de boekhouding verzorgen. Wij stellen ons niet aansprakelijk voor fouten in deze inschatting, of andere zaken die invloed hebben op de te betalen inkomstenbelasting, zoals; inkomsten uit overige werkzaamheden, vermogen, aandelen, etc. Mocht je wel preciezer willen weten hoeveel inkomstenbelasting je moet gaan betalen, dan kunnen wij je daarbij uiteraard begeleiden. Hiervoor hebben we echter meer persoonlijke informatie nodig, en dit is geen standaard onderdeel van onze dienstverlening.\n\nWe vertrouwen erop je hierbij voldoende te hebben geïnformeerd. Mocht je toch nog vragen hebben, dan kun je altijd bij ons terecht door te reageren op deze e-mail of via WhatsApp.\n\nVriendelijke groeten,\n\nTeam Nice Administratiekantoor\nE-Mail: niceboekhouding@gmail.com\nWhatsApp:0639861156');
+      }
+
+      function createInvoiceMail() {
+        // Mail Subject
+        $('#mailSubject').text($('#number').val() + ': Factuur ' + $('#invoice').val());
+
+        // Mail Content
+        $('#mailContent').text('Beste ' + $('#name').val() + ',\n\nZoals overeengekomen hebben we factuur ' + $('#invoice').val() + ' opgesteld met betrekking tot de levering van onze diensten.\n\nWe vertrouwen erop je hierbij voldoende te hebben geïnformeerd. Mocht je toch nog vragen hebben, dan kun je altijd bij ons terecht door te reageren op deze e-mail of via WhatsApp.\n\nVriendelijke groeten,\n\nTeam Nice Administratiekantoor\nE-Mail: niceboekhouding@gmail.com\nWhatsApp:0639861156');
+      }
+      
+      function createReminderMail() {
+        // Mail Subject
+        $('#mailSubject').text($('#number').val() + ': Herinnering Factuur ' + $('#invoice').val());
+
+        // Mail Content
+        $('#mailContent').text('Beste ' + $('#name').val() + ',\n\nUit onze administratie is gebleken dat er nog geen betaling is ontvangen van factuur ' + $('#invoice').val() + ', waarvan de betalingstermijn inmiddels is verstreken.\n\nEen kopie van deze factuur tref je bijgesloten aan, alsmede onze Algemene Voorwaarden waarin de procedure met betrekking tot late betalingen staat toegelicht.\n\nVriendelijk verzoeken wij je alsnog zorg te dragen voor betaling binnen 7 dagen na verzending van deze e-mail.\n\nMocht de betaling inmiddels hebben plaatsgevonden, dan kun je dit bericht als niet verzonden beschouwen.\n\nVriendelijke groeten,\n\nTeam Nice Administratiekantoor\nE-Mail: niceboekhouding@gmail.com\nWhatsApp:0639861156');
+      }
+
+      function fixCopyPaste(inputValue) {
+        if (!inputValue) {
+          return;
+        }
+        var outputValue = inputValue.trim();
+        if (inputValue.includes(',')) {
+          outputValue = outputValue.replace(/\./g, '');
+          outputValue = outputValue.replace(/,/g, '.');
+
+          console.log('<' + inputValue + '> converted to <' + outputValue + '>');
+        }
+        return outputValue;
+      }
+
+      function getTaxesIB() {
+        const ZELFSTANDIGENAFTREK = 7030;
+        const STARTERSKORTING = 2123;
+        const MKBWINSTVRIJSTELLING = 0.14;
+
+        var profitMonth1 = fixCopyPaste($('#profitMonth1').val());
+        var profitMonth2 = fixCopyPaste($('#profitMonth2').val());
+        var profitMonth3 = fixCopyPaste($('#profitMonth3').val());
+        var profitMonth = Math.ceil((+profitMonth1 + +profitMonth2 + +profitMonth3) / 3);
+
+        var profit = fixCopyPaste($('#profit').val());
+        var currentMonth = +(getLastMonth().substr(5, 2));
+        var monthsRemaining = 12 - currentMonth;
+        var profitTotal = +profit + (monthsRemaining * profitMonth);
+
+        var deduction = $('#deduction').prop('checked');
+        var starter = $('#starter').prop('checked');
+
+        var profitCorrected = profitTotal;
+        profitCorrected -= (deduction ? ZELFSTANDIGENAFTREK : 0);
+        profitCorrected -= (starter ? STARTERSKORTING : 0);
+        profitCorrected = Math.max(0, profitCorrected);
+        profitCorrected = (1-MKBWINSTVRIJSTELLING) * profitCorrected;
+
+        var scale1 = Math.min(68508, profitCorrected);
+        var scale2 = Math.max(0, profitCorrected - 68508);
+        var zvw = 0.057 * Math.min(55927, profitCorrected);
+        var tax = (scale1 * 0.3735) + (scale2 * 0.4950);
+
+        // https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/inkomstenbelasting/heffingskortingen_boxen_tarieven/heffingskortingen/algemene_heffingskorting/tabel-algemene-heffingskorting-2019
+        var taxCredit = 0;
+        if (profitCorrected <= 20711) {
+          taxCredit = 2711;
+        } else if (profitCorrected > 20711 && profitCorrected <= 68507) {
+          taxCredit = 2711 - (0.05672*(profitCorrected-20711));
+        }
+
+        // https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/inkomstenbelasting/heffingskortingen_boxen_tarieven/heffingskortingen/arbeidskorting/tabel-arbeidskorting-2019
+        var workingTaxCredit = 0;
+        if (profitTotal <= 9921) {
+          workingTaxCredit = 0.02812 * profitTotal;
+        } else if (profitTotal > 9921 && profitTotal <= 21430) {
+          workingTaxCredit = 279 + (0.28812 * (profitTotal - 9921) );
+        } else if (profitTotal > 21430 && profitTotal <= 34954) {
+          workingTaxCredit = 3595 + (0.01656 * (profitTotal - 21430) );
+        } else if (profitTotal > 34954 && profitTotal <= 98604) {
+          workingTaxCredit = 3819 - (0.06 * (profitTotal - 34954) );
+        } else {
+          workingTaxCredit = 0;
+        }
+
+        var taxYear = Math.max(0, Math.ceil(tax - taxCredit - workingTaxCredit + zvw));
+        var taxCurrent = Math.ceil( ( currentMonth / 12 ) * taxYear);
+
+        // console.log('------')
+        // console.log('Alg. Heffingskorting  : ' + taxCredit);
+        // console.log('Arbeidskorting        : ' + workingTaxCredit);
+        // console.log('Bruto winst           : ' + profit);
+        // console.log('Bruto winst (verwacht): ' + profitTotal);
+        // console.log('Zelfstandigenaftrek   : ' + (deduction ? ZELFSTANDIGENAFTREK : 0));
+        // console.log('Starterskorting       : ' + (starter ? STARTERSKORTING : 0));
+        // console.log('Belasting voor korting: ' + tax);
+        // console.log('Bijdrage Zvw          : ' + zvw);
+        // console.log('=');
+        // console.log('IB Jaar   : ' + taxYear);
+        // console.log('IB Heden  : ' + taxCurrent);
+        // console.log('------');
+
+        return taxCurrent;
+      }
+
+      function getTaxesBTW() {
+        return Math.max(0, Math.ceil(fixCopyPaste($('#btw').val())));
+      }
+
+      function getLastMonth() {
+        var date = new Date();
+        date.setMonth(date.getMonth() - 1);
+        var month = date.getMonth() + 1;
+        month = month < 10 ? "0" + month : month;
+        return date.getFullYear() + '-' + month;
+      }
+
+      function getLastMonthName() {
+        return months[(((new Date().getMonth()-1)+12)%12)];
+      }
+
+      function getLastMonthQuarter() {
+        var date = new Date();
+        date.setMonth(date.getMonth() - 1);
+        var month = date.getMonth() + 1;
+        month = month < 10 ? "0" + month : month;
+        return month <= 3 ? "Eerste" : (month <= 6 ? "Tweede" : (month <= 9 ? "Derde" : "Vierde"));
+      }
+
+    </script>
+  </head>
+  <body onload="initialize()" style="font-family: Arial, sans-serif;">
+    <div id="menuWrapper">
+      <div id="logo"><img src="https://lh3.googleusercontent.com/_ngRkmIEeSVETstyGFH5emO6x0M5SjYTo_CFFviI5xcgCjq2ww1CJ1FPGgIFqWsC8tPKX9Kf=w1080-h608-p-no-v0" height="140px"/></div>
+      <div id="menu"></div>
+    </div>
+    <hr/>
+    <div id="workload">
+      <h2 id="title"></h2>
+      <div id="steps"></div>
+      <ul id="instructions"></ul>
+      <div id="result"></div>
+    </div>
+  </body>
+</html>
