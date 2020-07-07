@@ -84,6 +84,7 @@
 
       /*
         E-Boekhouden Start
+        https://secure.e-boekhouden.nl/handleiding/Documentatie_soap.pdf
        */
 
       var eboekhoudenBaseUrl = 'https://soap.e-boekhouden.nl/soap.asmx?WSDL';
@@ -107,6 +108,7 @@
       $.ajax({
         url: eboekhoudenBaseUrl,
         type: 'POST',
+        crossDomain: true,
         dataType: 'xml',
         data: soapMessage,
         complete: function (response) {
