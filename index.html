@@ -112,25 +112,14 @@
       console.log(soapRequestBody);
 
       $.ajax({
-        url: eboekhoudenBaseUrl,
-        type: 'POST',
-        data: soapRequestBody,
-        crossDomain: true,
-        dataType: 'xml',
-        contentType: 'text/xml; charset="utf-8"',
-        headers: {
-          SOAPAction: soapAction
-        },
-        success: function (response) {
-          console.log('E-Boekhouden Request: Successful');
-          console.log(response);
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-          console.log('E-Boekhouden Request: Failure');
-          console.log(XMLHttpRequest);
-          console.log(textStatus);
-          console.log(errorThrown);
+        "url": eboekhoudenBaseUrl,
+        "method": "POST",
+        "headers": {
+          "SOAPAction": soapAction,
+          "Content-Type": "text/xml",
         }
+      }).done(function (response) {
+        console.log(response);
       });
 
       /*
