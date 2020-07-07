@@ -105,10 +105,10 @@
             customerNumber: split[0],
             customerName: split[1],
             customerContact: split[2],
-            customerOptionWeSaveTaxes: split[3],
-            customerOptionPaymentRequest: split[4],
-            customerOptionWorksOver1225: split[5],
-            customerOptionStarter: split[6]
+            customerOptionWeSaveTaxes: (split[3] === 'true'),
+            customerOptionPaymentRequest: (split[4] === 'true'),
+            customerOptionWorksOver1225: (split[5] === 'true'),
+            customerOptionStarter: parseInt(split[6], 10)
           }
           console.log('Trello Data Customer[' + i + ']:');
           console.log(customer);
