@@ -25,62 +25,7 @@
     crossorigin="anonymous"></script>
     <script src="https://api.trello.com/1/client.js?key=4c199ea635860bca26b23270f0d7bf1e"></script>
     <script>
-      var customers = [
-        {
-          customerNumber: 'Z000002',
-          customerName: 'R. Tvrda',
-          customerContact: 'Romana',
-          customerOptionWeSaveTaxes: true,
-          customerOptionPaymentRequest: false,
-          customerOptionWorksOver1225: true,
-          customerOptionStarter: 1 //2019
-        },
-        {
-          customerNumber: 'Z000004',
-          customerName: 'Time 2 Pierce',
-          customerContact: 'Tessa',
-          customerOptionWeSaveTaxes: true,
-          customerOptionPaymentRequest: false,
-          customerOptionWorksOver1225: true,
-          customerOptionStarter: 1 //2019
-        },
-        {
-          customerNumber: 'Z000005',
-          customerName: 'Jve Services',
-          customerContact: 'Jacqueline',
-          customerOptionWeSaveTaxes: true,
-          customerOptionPaymentRequest: true,
-          customerOptionWorksOver1225: false,
-          customerOptionStarter: 0
-        },
-        {
-          customerNumber: 'Z000007',
-          customerName: 'T.J. Cleaning',
-          customerContact: 'Jolanda',
-          customerOptionWeSaveTaxes: false,
-          customerOptionPaymentRequest: false,
-          customerOptionWorksOver1225: false,
-          customerOptionStarter: 0
-        },
-        {
-          customerNumber: 'Z000009',
-          customerName: 'Ladyservice',
-          customerContact: 'Linda',
-          customerOptionWeSaveTaxes: true,
-          customerOptionPaymentRequest: true,
-          customerOptionWorksOver1225: false,
-          customerOptionStarter: 0
-        },
-        {
-          customerNumber: 'Z000010',
-          customerName: 'Praktijk Handbereik',
-          customerContact: 'Miranda',
-          customerOptionWeSaveTaxes: true,
-          customerOptionPaymentRequest: false,
-          customerOptionWorksOver1225: false,
-          customerOptionStarter: 0
-        }
-      ];
+      var customers = [];
 
       /*
         Trello Start
@@ -95,12 +40,12 @@
         console.log('Trello Authentication: Failed');
       };
 
-      var trelloGetCustomersSuccess = function(result) {
+      var trelloGetCustomersSuccess = function(response) {
         console.log('Trello Get Customers: Success');
-        console.log(result);
-        console.log(result.checkItems);
-        for (var i = 0; i < result.checkItems.length; i++) {
-          var split = result.checkItems[i].name.split(";")
+        console.log(response);
+        console.log(response.checkItems);
+        for (var i = 0; i < response.checkItems.length; i++) {
+          var split = response.checkItems[i].name.split(";")
           var customer = {
             customerNumber: split[0],
             customerName: split[1],
@@ -110,11 +55,10 @@
             customerOptionWorksOver1225: (split[5] === 'true'),
             customerOptionStarter: parseInt(split[6], 10)
           }
-          console.log('Trello Data Customer[' + i + ']:');
+          console.log('Trello Data Customer "' + split[1] + '"');
           console.log(customer);
           customers.push(customer);
         }
-        console.log(customers);
       };
 
       var trelloGetCustomersFailure = function() {
@@ -136,6 +80,36 @@
 
       /*
         Trello End
+       */
+
+      /*
+        E-Boekhouden Start
+       */
+
+      var eboekhoudenBaseUrl = 'https://soap.e-boekhouden.nl/soap.asmx?WSDL';
+      var eboekhoudenUsername = 'nickfrijters';
+      var eboekhoudenSecurityCode1 = prompt('Please enter e-boekhouden "Beveiligingscode 1"', '');
+      var eboekhoudenSecurityCode2 = prompt('Please enter e-boekhouden "Beveiligingscode 2"', '');
+
+      $.soap({
+        url: eboekhoudenBaseUrl,
+        data: {
+          Username: eboekhoudenUsername,
+          SecurityCode1: eboekhoudenSecurityCode1,
+          SecurityCode2: eboekhoudenSecurityCode2
+        },
+        success: function(response) {
+          console.log('E-Boekhouden Request: Successful');
+          console.log(response);
+        },
+        error: function (response) {
+          console.log('E-Boekhouden Request: Failure');
+          console.log(response);
+        }
+      });
+
+      /*
+        E-Boekhouden End
        */
 
       var months = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
