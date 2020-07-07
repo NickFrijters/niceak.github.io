@@ -91,44 +91,46 @@
 
       var eboekhoudenBaseUrl = 'https://soap.e-boekhouden.nl/soap.asmx?WSDL';
       var eboekhoudenUsername = 'nickfrijters';
-      var eboekhoudenSecurityCode1 = 'abc';
-      var eboekhoudenSecurityCode2 = 'def';
-      // var eboekhoudenSecurityCode1 = prompt('Please enter e-boekhouden "Beveiligingscode 1"', '');
-      // var eboekhoudenSecurityCode2 = prompt('Please enter e-boekhouden "Beveiligingscode 2"', '');
+      var eboekhoudenSecurityCode1 = prompt('Please enter e-boekhouden "Beveiligingscode 1"', '');
+      var eboekhoudenSecurityCode2 = prompt('Please enter e-boekhouden "Beveiligingscode 2"', '');
 
-      var soapMessage = '<?xml version="1.0" encoding="UTF-8"?>' +
-        '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.e-boekhouden.nl/soap">' +
-        '<SOAP-ENV:Body>' +
-        '<ns1:OpenSession>' +
-        '<ns1:Username>' + eboekhoudenUsername + '</ns1:Username>' +
-        '<ns1:SecurityCode1>' + eboekhoudenSecurityCode1 + '</ns1:SecurityCode1>' +
-        '<ns1:SecurityCode2>' + eboekhoudenSecurityCode2 + '</ns1:SecurityCode2>' +
-        '</ns1:OpenSession>' +
-        '</SOAP-ENV:Body>' +
-        '</SOAP-ENV:Envelope>';
+      // OpenSession
+      var soapAction = 'http://www.e-boekhouden.nl/soap/OpenSession';
+      var soapRequestBody = '<?xml version="1.0" encoding="UTF-8"?> \
+      <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.e-boekhouden.nl/soap"> \
+      <SOAP-ENV:Body> \
+      <ns1:OpenSession> \
+      <ns1:Username>' + eboekhoudenUsername + '</ns1:Username> \
+      <ns1:SecurityCode1>' + eboekhoudenSecurityCode1 + '</ns1:SecurityCode1> \
+      <ns1:SecurityCode2>' + eboekhoudenSecurityCode2 + '</ns1:SecurityCode2> \
+      </ns1:OpenSession> \
+      </SOAP-ENV:Body> \
+      </SOAP-ENV:Envelope>';
 
       console.log('E-Boekhouden Request Sent');
-      console.log(soapMessage);
+      console.log(soapAction);
+      console.log(soapRequestBody);
 
       $.ajax({
         url: eboekhoudenBaseUrl,
         type: 'POST',
+        data: soapRequestBody,
         crossDomain: true,
         dataType: 'xml',
+        contentType: 'text/xml; charset="utf-8"',
         headers: {
-          'SOAPAction': 'http://www.e-boekhouden.nl/soap/OpenSession',
-          'Content-Type': 'text/xml'
+          SOAPAction: soapAction
         },
-        data: soapMessage,
         success: function (response) {
           console.log('E-Boekhouden Request: Successful');
           console.log(response);
         },
-        error: function (response) {
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
           console.log('E-Boekhouden Request: Failure');
-          console.log(response);
-        },
-        contentType: 'text/xml'
+          console.log(XMLHttpRequest);
+          console.log(textStatus);
+          console.log(errorThrown);
+        }
       });
 
       /*
